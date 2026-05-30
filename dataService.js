@@ -1,44 +1,44 @@
 // ============================================================
-// dataService.js â€” ZdravÃ½ hrÃ¡Ä PRO
-// DatovÃ¡ vrstva pro Google Sheets (FÃ¡ze 1)
-// VÃ½mÄ›na tohoto souboru = migrace na Supabase (FÃ¡ze 2)
+// dataService.js — Zdravý hráč PRO
+// Datová vrstva pro Google Sheets (Fáze 1)
+// Výměna tohoto souboru = migrace na Supabase (Fáze 2)
 // ============================================================
 
 const DS = (() => {
 
   // --- KONFIGURACE ---
-  // VyplÅˆ po vytvoÅ™enÃ­ Google Sheets + Apps Script Web App
+  // Vyplň po vytvoření Google Sheets + Apps Script Web App
   const SHEET_ENDPOINT = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
-  const DEMO_MODE = true; // true = lokÃ¡lnÃ­ demo data, false = live Sheets
+  const DEMO_MODE = true; // true = lokální demo data, false = live Sheets
 
   // --- DEMO DATA ---
   const demoData = {
-    player: { id: 'hrac_001', nickname: 'HrÃ¡Ä 001', klub: 'Klatovy', createdAt: '2026-01-15' },
+    player: { id: 'hrac_001', nickname: 'Hráč 001', klub: 'Klatovy', createdAt: '2026-01-15' },
     screenings: [
-      { id: 's1', date: '2026-05-29', rameno: 4, loket: 2, zada: 0, koleno: 3, kycel: 0, note: 'Po zÃ¡pase, rameno a koleno' },
-      { id: 's2', date: '2026-05-27', rameno: 2, loket: 2, zada: 0, koleno: 1, kycel: 0, note: 'Po trÃ©ninku, ok' },
+      { id: 's1', date: '2026-05-29', rameno: 4, loket: 2, zada: 0, koleno: 3, kycel: 0, note: 'Po zápase, rameno a koleno' },
+      { id: 's2', date: '2026-05-27', rameno: 2, loket: 2, zada: 0, koleno: 1, kycel: 0, note: 'Po tréninku, ok' },
       { id: 's3', date: '2026-05-24', rameno: 7, loket: 4, zada: 2, koleno: 3, kycel: 0, note: 'Rameno 7 po turnaji!' },
-      { id: 's4', date: '2026-05-21', rameno: 1, loket: 0, zada: 0, koleno: 0, kycel: 0, note: 'VolnÃ½ den, vÃ½bornÄ›' },
+      { id: 's4', date: '2026-05-21', rameno: 1, loket: 0, zada: 0, koleno: 0, kycel: 0, note: 'Volný den, výborně' },
       { id: 's5', date: '2026-05-18', rameno: 3, loket: 2, zada: 1, koleno: 2, kycel: 0, note: '' },
-      { id: 's6', date: '2026-05-15', rameno: 5, loket: 3, zada: 0, koleno: 4, kycel: 1, note: 'TÄ›Å¾kÃ½ trÃ©nink' },
+      { id: 's6', date: '2026-05-15', rameno: 5, loket: 3, zada: 0, koleno: 4, kycel: 1, note: 'Těžký trénink' },
     ],
     exercises: [
-      { id: 'e1', name: 'RotÃ¡torovÃ¡ manÅ¾eta', area: 'rameno', desc: 'PosilovÃ¡nÃ­ vnitÅ™nÃ­ a vnÄ›jÅ¡Ã­ rotace s gumou', sets: '3 Ã— 15', level: 'lehkÃ©', pillar: 1, img: 'rotatorova-mancheta.jpg' },
-      { id: 'e2', name: 'Nordic hamstring', area: 'koleno', desc: 'ExcentrickÃ© posilovÃ¡nÃ­ zadnÃ­ stehennÃ­ skupiny', sets: '3 Ã— 8', level: 'stÅ™ednÃ­', pillar: 1, img: 'nordic-hamstring.jpg' },
-      { id: 'e3', name: 'Forearm flexor stretch', area: 'loket', desc: 'ProtaÅ¾enÃ­ flexorÅ¯ pÅ™edloktÃ­', sets: '3 Ã— 30s', level: 'lehkÃ©', pillar: 4, img: 'forearm-flexor.jpg' },
-      { id: 'e4', name: 'DiafragmatickÃ½ dech', area: 'dech', desc: 'BÅ™iÅ¡nÃ­ dÃ½chÃ¡nÃ­ pro regeneraci a klid', sets: '5 min', level: 'lehkÃ©', pillar: 2, img: 'diafragmaticky-dech.jpg' },
-      { id: 'e5', name: 'Hip flexor stretch', area: 'kycel', desc: 'UvolnÄ›nÃ­ flexorÅ¯ kyÄle po hÅ™e', sets: '2 Ã— 45s', level: 'lehkÃ©', pillar: 4, img: 'hip-flexor.jpg' },
+      { id: 'e1', name: 'Rotátorová manžeta', area: 'rameno', desc: 'Posilování vnitřní a vnější rotace s gumou', sets: '3 × 15', level: 'lehké', pillar: 1, imgData: typeof IMG_EX1 !== 'undefined' ? IMG_EX1 : null },
+      { id: 'e2', name: 'Nordic hamstring', area: 'koleno', desc: 'Excentrické posilování zadní stehenní skupiny', sets: '3 × 8', level: 'střední', pillar: 1, imgData: typeof IMG_EX2 !== 'undefined' ? IMG_EX2 : null },
+      { id: 'e3', name: 'Forearm flexor stretch', area: 'loket', desc: 'Protažení flexorů předloktí', sets: '3 × 30s', level: 'lehké', pillar: 4, imgData: typeof IMG_EX3 !== 'undefined' ? IMG_EX3 : null },
+      { id: 'e4', name: 'Diafragmatický dech', area: 'dech', desc: 'Břišní dýchání pro regeneraci a klid', sets: '5 min', level: 'lehké', pillar: 2, imgData: typeof IMG_EX4 !== 'undefined' ? IMG_EX4 : null },
+      { id: 'e5', name: 'Hip flexor stretch', area: 'kycel', desc: 'Uvolnění flexorů kyčle po hře', sets: '2 × 45s', level: 'lehké', pillar: 4, imgData: typeof IMG_EX5 !== 'undefined' ? IMG_EX5 : null },
     ],
     tips: [
-      { pillar: 1, text: 'PÅ™ed hrou 5 minut dynamickÃ©ho rozcviÄenÃ­ â€” hÃ½Å¾dÄ›, ramena, rotace trupu.' },
-      { pillar: 2, text: 'Mezi sety dÃ½chej nosem. 4 vteÅ™iny nÃ¡dech, 6 vÃ½dech â€” okamÅ¾itÄ› sniÅ¾uje kortizol.' },
-      { pillar: 3, text: 'Sleduj pÅ™i podÃ¡nÃ­ Å¡vih zÃ¡pÄ›stÃ­ â€” 80 % chyb pochÃ¡zÃ­ odsud, ne z ramene.' },
-      { pillar: 4, text: 'SpÃ¡nek pod 7 hodin = o 20 % horÅ¡Ã­ reakÄnÃ­ Äas. Priorita ÄÃ­slo jedna.' },
-      { pillar: 5, text: 'KaÅ¾dÃ½ rok hrajeÅ¡ bez zranÄ›nÃ­ = o 2 roky dÃ©le na kurtu ve 60.' },
+      { pillar: 1, text: 'Před hrou 5 minut dynamického rozcvičení — hýždě, ramena, rotace trupu.' },
+      { pillar: 2, text: 'Mezi sety dýchej nosem. 4 vteřiny nádech, 6 výdech — okamžitě snižuje kortizol.' },
+      { pillar: 3, text: 'Sleduj při podání švih zápěstí — 80 % chyb pochází odsud, ne z ramene.' },
+      { pillar: 4, text: 'Spánek pod 7 hodin = o 20 % horší reakční čas. Priorita číslo jedna.' },
+      { pillar: 5, text: 'Každý rok hraješ bez zranění = o 2 roky déle na kurtu ve 60.' },
     ]
   };
 
-  // --- VEÅ˜EJNÃ‰ API ---
+  // --- VEŘEJNÉ API ---
 
   async function getPlayer() {
     if (DEMO_MODE) return demoData.player;
@@ -113,7 +113,7 @@ const DS = (() => {
     };
   }
 
-  // --- INTERNÃ ---
+  // --- INTERNÍ ---
   async function _fetch(action, params = {}, method = 'GET') {
     try {
       const url = method === 'GET'
