@@ -193,7 +193,9 @@ html,body{ background:var(--black); color:var(--white); font-family:var(--font-b
 .pillar-chip.active,.pillar-chip:hover{ border-color:var(--gold); color:var(--gold); background:var(--gold-dim); }
 
 .ex-list{ padding:0 14px; display:flex; flex-direction:column; gap:9px; }
-.ex-card{ background:var(--surface); border:0.5px solid var(--border); border-radius:13px; padding:15px; display:flex; gap:13px; align-items:flex-start; cursor:pointer; transition:border-color .15s,background .15s; }
+.ex-card{ background:var(--surface); border:0.5px solid var(--border); border-radius:13px; overflow:hidden; cursor:pointer; transition:border-color .15s,background .15s; }
+.ex-card-img{ width:100%; height:110px; object-fit:cover; object-position:center; opacity:.85; display:block; }
+.ex-card-body{ padding:12px 14px 14px; display:flex; gap:12px; align-items:flex-start; }
 .ex-card:active{ background:var(--surface2); border-color:var(--gold); }
 .ex-num{ font-family:var(--font-d); font-size:30px; color:var(--border2); line-height:1; min-width:28px; letter-spacing:.02em; }
 .ex-body{ flex:1; }
